@@ -20,10 +20,9 @@ class StreamingStdOutCallbackHandler(BaseCallbackHandler):
         self.receiver=receiver
     def on_llm_new_token(self, token: str, **kwargs) -> None:
         print(token, end="", flush=True)
-        self.receiver.receive(token)
-    def on_llm_end(self, response: LLMResult, *, run_id: UUID, parent_run_id: UUID | None = None, **kwargs: os.Any) -> os.Any:
-        self.receiver.end()
-        return super().on_llm_end(response, run_id=run_id, parent_run_id=parent_run_id, **kwargs)
+        self.receiver.send_stream(token)
+    def on_llm_end(self):
+        self.receiver.send_end()
 
 class AgentChat:
     def __init__(self,receiver) -> None:
@@ -50,7 +49,6 @@ class AgentChat:
         ]
 
         # 初始化代理
-        self.history = BaseChatMessageHistory()
         self.agent = initialize_agent(
             tools=self.tools,
             llm=self.llm,
@@ -77,8 +75,7 @@ class AgentChat:
             if not role:
                 logger.error("Invalid Role")
                 return
-            if role == 'assistant':
-                self.agent
+        #没写完呢
             
 
 
@@ -87,5 +84,7 @@ def get_weather(location: str) -> str:
     """获取给定位置的当前天气"""
     logger.info(f"【调用Tool】天气tool被调用了，地点：{location}")
     return f'{location}的天气是27℃'
-
-
+'''
+agentChat=AgentChat(Receiver())
+agentChat.chat("北京天气如何")
+#'''
