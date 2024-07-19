@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SSE with POST Trigger</title>
+</head>
+<body>
+    <h1>SSE with POST Trigger</h1>
+    <button onclick="triggerSSE()">Start SSE</button>
+    <div id="output"></div>
+    <script>
+        var es = new EventSource(null);
+
+        function triggerSSE() {
+            fetch('http://127.0.0.1:8000', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ messages: [{ content: "Hello, server!" }] })
+            }).then(response => {
+                es = new EventSource('http://127.0.0.1:8000');
+                es.onmessage = function(event) {
+                    document.getElementById('output').textContent = event.data;
+                };
+                es.onerror = function(event) {
+                    console.error('SSE connection failed:', event);
+                    es.close();
+                };
+            }).catch(error => {
+                console.error('Error triggering SSE:', error);
+            });
+        }
+    </script>
+</body>
+</html>
