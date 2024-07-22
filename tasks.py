@@ -103,3 +103,14 @@ class RedditTasks():
             你的最终答案是文字，最好是中文。要说出游玩地点的特色。
                 """),
         )
+    
+    #总任务
+    def all(self,agent,start="北京",end="上海",hobby="美食"):
+        return Task(
+            description=dedent(f"""为用户做一个包含往返方案，目的地游玩地点推荐，目的地游玩路线规划的完整旅行计划。起点{start}，目的地{end}，用户喜欢{hobby}。若你还需要更多信息，就取消前一个目标，把任务目标转变为搜集信息。
+                """),
+            agent=agent,
+            expected_output = dedent(f"""  
+            你的最终答案是文字，最好是中文。事无巨细都要安排好！
+                """),
+        )
