@@ -1,10 +1,12 @@
-"""Tool for the Reddit search API."""
+"""Tool for the VoyageGenie"""
 
-from typing import Optional, Type, List
+from typing import Optional, Type, List, int
 
 from langchain_core.callbacks import CallbackManagerForToolRun
 from langchain_core.pydantic_v1 import BaseModel, Field
 from langchain_core.tools import BaseTool
+
+from tools.aggregation import *
 
 
 class GetRouteSchema(BaseModel):
@@ -17,7 +19,7 @@ class GetRouteSchema(BaseModel):
 class GetRoute(BaseTool):
     """一个工具，作用：在游玩的目的地输入若干个地点，输出路线。记住，只关乎目的地内部的具体游玩路线，和出发地到目的地的通行没有关系"""
 
-    name: str = "get_route_in_destination_city"
+    name: str = "在目的地给若干游玩地点规划路线"
     description: str = (
         "一个工具，作用：在游玩的目的地输入若干个地点，输出路线。记住，只关乎目的地内部的具体游玩路线，和出发地到目的地的通行没有关系"
     )
@@ -30,6 +32,9 @@ class GetRoute(BaseTool):
         """Use the tool."""
         resultStrings=[]
         #events=events.split(',')
-        for i in range(len(events)-1):
-            resultStrings.append(f"从{events[i]}坐22路公交车到{events[i+1]}")
-        return ",再".join(resultStrings)+'.'
+        # for i in range(len(events)-1):
+        #     resultStrings.append(f"从{events[i]}坐22路公交车到{events[i+1]}")
+        # return ",再".join(resultStrings)+'.'
+        route = event_route(events)
+        # 对格式做处理，只保留某些字段
+        return 
