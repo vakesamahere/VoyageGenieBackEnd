@@ -1,4 +1,4 @@
-from tool.aggregation import *
+from tools.aggregation import *
 
 # 测试天气查询功能
 def test_weather():
