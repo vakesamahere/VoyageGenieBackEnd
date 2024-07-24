@@ -43,16 +43,16 @@ def generate_optimal_path(events):
     return path
 
 
-# 示例用法
-events = [
-    {'location': '113.978615,22.537872', 'citycode': '0755', 'adcode': '440305', 'city': '深圳', 'address': '深圳市南山区华侨城侨城西路'},
-    {'location': '114.304642,22.594236', 'citycode': '0755', 'adcode': '440308', 'city': '深圳', 'address': '深圳市盐田区盐葵路大梅沙段148号'},
-    {'location': '113.997275,22.531446', 'citycode': '0755', 'adcode': '440304', 'city': '深圳', 'address': '深圳市南山区华侨城深南大道9003号'},
-    {'location': '114.287666,22.626673', 'citycode': '0755', 'adcode': '440308', 'city': '深圳', 'address': '深圳市盐田区大梅沙东部华侨城'},
-    {'location': '114.055482,22.534040', 'citycode': '0755', 'adcode': '440304', 'city': '深圳', 'address': '深圳市福田区益田路5033号平安金融中心116层'}
-]
+# # 示例用法
+# events = [
+#     {'location': '113.978615,22.537872', 'citycode': '0755', 'adcode': '440305', 'city': '深圳', 'address': '深圳市南山区华侨城侨城西路'},
+#     {'location': '114.304642,22.594236', 'citycode': '0755', 'adcode': '440308', 'city': '深圳', 'address': '深圳市盐田区盐葵路大梅沙段148号'},
+#     {'location': '113.997275,22.531446', 'citycode': '0755', 'adcode': '440304', 'city': '深圳', 'address': '深圳市南山区华侨城深南大道9003号'},
+#     {'location': '114.287666,22.626673', 'citycode': '0755', 'adcode': '440308', 'city': '深圳', 'address': '深圳市盐田区大梅沙东部华侨城'},
+#     {'location': '114.055482,22.534040', 'citycode': '0755', 'adcode': '440304', 'city': '深圳', 'address': '深圳市福田区益田路5033号平安金融中心116层'}
+# ]
 
-# 生成路径
-optimal_path = generate_optimal_path(events)
-for item in optimal_path:
-    print(item)
+# # 生成路径
+# optimal_path = generate_optimal_path(events)
+# for item in optimal_path:
+#     print(item)

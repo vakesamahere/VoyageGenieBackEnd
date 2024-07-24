@@ -1,8 +1,6 @@
 import time, sys, json
-from uuid import UUID
 
 from crewai import Crew, Process
-from langchain_core.outputs import LLMResult
 from agents import RedditAgents
 from tasks import RedditTasks
 
@@ -65,10 +63,6 @@ class TypewriterStreamHandler(BaseCallbackHandler):
             self.receiver_send(token)
 
         self.last_output_time = time.time()
-
-    def on_llm_end(self, response: LLMResult, *, run_id: UUID, parent_run_id: UUID | None = None, **kwargs: Ollama) -> Ollama:
-        self.receiver_send('<END>')
-        return super().on_llm_end(response, run_id=run_id, parent_run_id=parent_run_id, **kwargs)
 
 def run_crew(receiver):
     print(receiver)

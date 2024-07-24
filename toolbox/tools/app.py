@@ -3,6 +3,7 @@ from flask import Flask
 from nav import *
 from aggregation import *
 import concurrent.futures
+from hotel import *
 
 app = Flask(__name__)
 
@@ -14,41 +15,29 @@ def travel():
     return data
 
 
-@app.route("/loc1")
-def loc1():
-    event = {
-        "city": "上海",
-        "address": "同济大学"
-    }
-    return event_location(event)
-
-
 @app.route('/food')
 def food():
-    data = food_data( "上海", 3, 5)
+    data = food_data("北京", "上海", 3, 5)
     return data
 
 
 @app.route('/sight')
 def sight():
-    data = sight_data( "北京", 3, 5)
+    data = sight_data("天津", "北京", 3, 5)
     return data
 
 
 @app.route('/entertainment')
 def entertainment():
+    city = "厦门"
     des_city = "深圳"
-    food = food_data(des_city,3,5)
-    sight = sight_data(des_city,3,5)
+    food = food_data(city, des_city)
+    sight = sight_data(city, des_city)
     return {
         "food": food,
         "sight": sight
     }
-@app.route('/weather')
-def weather():
-    city="天津"
-    data=weather_data(city)
-    return data
+
 
 @app.route('/aggr')
 def aggr():
@@ -56,7 +45,7 @@ def aggr():
     max_ = 8
     start_time = time.time()
     city = "杭州"
-    des_city = "北京"
+    des_city = "上海"
     with concurrent.futures.ThreadPoolExecutor() as executor:
         # 提交每个任务到线程池
         future_food = executor.submit(food_data, city, des_city, min_, max_)
@@ -79,7 +68,7 @@ def aggr():
     }
 
 
-@app.route('/route')
+@app.route('/location')
 def loc():
     events = [
         {
@@ -107,10 +96,17 @@ def loc():
             "address": "北京市东城区天坛路甲1号"
         }
     ]
-    # 前提 events 的第一元素是起点
-    res=event_route(events)
-    return res
+    return event_route(events)
 
+
+
+@app.route('/hotel')
+def hotel():
+    event = {
+        "city": "北京",
+        "address": "北京市延庆区G6京藏高速58号出口"
+    }
+    return hotel_info(event)
 
 
 if __name__ == '__main__':

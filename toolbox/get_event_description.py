@@ -18,14 +18,19 @@ class GetEventDescriptionSchema(BaseModel):
         description="具体的需要被介绍的地点"
     )
 
+def callback_fun():
+    print('GET_EVENT_DESCRIPTION'+'='*100)
+
 class GetEventDescription(BaseTool):
     """工具"""
+
 
     name: str = "对指定游玩地点做介绍"
     description: str = (
         "一个工具，作用：输入游玩目的地中的一个具体地点，输出有关这个地点的详细信息。"
     )
     args_schema: Type[BaseModel] = GetEventDescriptionSchema
+    callbacks=callback_fun
 
     def _run(
         self,
@@ -33,4 +38,5 @@ class GetEventDescription(BaseTool):
         event: str
     ) -> str:
         """Use the tool."""
+        callback_fun()
         return '像家一样温暖'

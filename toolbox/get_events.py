@@ -23,6 +23,9 @@ class GetEventsSchema(BaseModel):
         description="要求返回的最大数量"
     )
 
+def callback_fun():
+    print('GET_EVENTS'+'='*100)
+
 class GetEvents(BaseTool):
     """工具"""
 
@@ -31,14 +34,16 @@ class GetEvents(BaseTool):
         "一个工具，作用：输入游玩目的地（城市），输出一系列值得游客一去并且符合用户喜好的旅游地点，包括三类：游玩地点、餐厅、住所。"
     )
     args_schema: Type[BaseModel] = GetEventsSchema
+    callbacks=callback_fun
 
     def _run(
         self,
         city: str,
-        _min: int,
-        _max: int
+        _min: int = 5,
+        _max: int = 30
     ) -> List[str]:
         """Use the tool."""
+        callback_fun()
         return ['同济大学','复旦大学','外滩']
         foods:Dict[str,Any]=food_data(city,_min,_max)
         sights:Dict[str,Any]=sight_data(city,_min,_max)

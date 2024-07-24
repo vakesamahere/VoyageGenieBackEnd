@@ -8,44 +8,6 @@ class RedditTasks():
 
     today_date = datetime.now().strftime('%Y-%m-%d-%H-%M')
 
-    def search_reddit(self, agent, query, sort, time_filter, subreddit, limit):
-        return Task(
-            description=dedent(f"""
-                Pass the complete Reddit search parameters (subreddit:{subreddit}, query: {query}, sort: {sort}, time_filter: {time_filter}, limit: {limit}) to the agent.
-                Search topic data from Reddit subreddit, 
-                summarize the information of each topic, and generate reports respectively.
-                Note: It must be a complete report, the number of topics should be consistent with the {limit} quantity.
-                """),
-            agent=agent,
-            output_file=f"output/{self.today_date}_Reddit_Report.md",
-            expected_output = dedent(f"""
-                It's a complete report.
-                And must be in Chinese,
-                and saved to the specified file. 
-                Please use Markdown format, as shown in the following example:                   
-                '## 1.post title (标题):
-                    - Link to this post: 
-                    - Post type (类型):
-                    - Highlights (亮点):
-                    - Tools and links cited in the post:
-                    - Summarize (摘要):
-                ... ... '
-                """),            
-        )
-
-    def translate_report(self, agent):
-        return Task(
-            description=dedent(f"""Professional translation of the report into Chinese. 
-                """),
-            agent=agent,
-            # context=context,
-            output_file=f"output/{self.today_date}_Reddit_Report_ZH.md",
-            expected_output = dedent(f"""  
-            For your final Outputs use the markdown format.
-            Note: that terms such as post title, tool name, function name, model name, company name, etc. retain their original names and do not translate. Keep the format of the original English report.
-                """),
-        )
-
     #普通聊天，记忆
     def talk_with_user(self,agent):
         return Task(
@@ -108,9 +70,13 @@ class RedditTasks():
     def all(self,agent,start="北京",end="上海",hobby="美食"):
         return Task(
             description=dedent(f"""为用户做一个包含往返方案，目的地游玩地点推荐，目的地游玩路线规划的完整旅行计划。起点{start}，目的地{end}，用户喜欢{hobby}。若你还需要更多信息，就取消前一个目标，把任务目标转变为搜集信息。
+            在完成任务的过程中：
+                               1.你只使用中文
+                               2.每个同事最多请一次、最少也请一次
+                               3.做好分工，做好委派
                 """),
             agent=agent,
             expected_output = dedent(f"""  
             你的最终答案是文字，最好是中文。事无巨细都要安排好！
-                """),
+                """)
         )

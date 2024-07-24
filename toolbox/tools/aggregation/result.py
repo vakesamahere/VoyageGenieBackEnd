@@ -1,11 +1,11 @@
 import json
 
 import requests
-
 from ..flight import *
 
 from ..weather import get_weather_info
 from ..entertainment import *
+from ..hotel import *
 from ..nav import *
 
 
@@ -29,24 +29,20 @@ def get_city_code(city):
 
 # 旅游情况
 def travel_data(city, des_city):
+    # 天气
+    city_adcode = get_city_code(des_city)
+    extensions = "base"  # all/base
+    weather_info = get_weather_info(city_adcode, extensions)
     # 交通
     trans = transportation(city, des_city)
     ret = {
+        "weather": weather_info,
         "transportation": trans
     }
     return ret
 
-
-#天气
-def weather_data(city):
-    city_adcode = get_city_code(city)
-    extensions="base"
-    weather_info = get_weather_info(city_adcode,extensions)
-    return weather_info
 # 娱乐相关 聚合接口
-
-
-def entertainment_data(des_city):
+def entertainment_data( des_city):
     place = get_city_num(des_city)
     places = [place]  # 例如，选择一个地点
     placenames = [des_city]  # 对应地点的名称
@@ -63,8 +59,7 @@ def entertainment_data(des_city):
     }
     return ret
 
-
-def food_data(des_city, min_, max_):
+def food_data( des_city, min_, max_):
     start_time = time.time()
     place = get_city_num(des_city)
     places = [place]  # 例如，选择一个地点
@@ -79,8 +74,7 @@ def food_data(des_city, min_, max_):
     print(execution_time_ms)
     return food_items
 
-
-def sight_data(des_city, min_, max_):
+def sight_data( des_city, min_, max_):
     start_time = time.time()
     place = get_city_num(des_city)
     places = [place]  # 例如，选择一个地点
@@ -95,8 +89,6 @@ def sight_data(des_city, min_, max_):
     print("sight_data time:")
     print(execution_time_ms)
     return sight_data
-
-
 def event_location(event):
     location=loc_info(event)
     return location
@@ -113,3 +105,8 @@ def event_route(events):
     # 生成导航路线方案
     res = get_nav_route(events_loc)
     return res
+
+
+def hotel_info(event):
+    location=get_hotel_info(event)
+    return location

@@ -8,69 +8,6 @@ from langchain_community.llms import Ollama
 # human_tools = load_tools(["human"])
 
 class RedditAgents():
-    # def __init__(self):
-        # self.OpenAIGPT35 = ChatOpenAI(
-        #     model_name="gpt-3.5-turbo", temperature=0.7)
-        # self.OpenAIGPT4 = ChatOpenAI(model_name="gpt-4", temperature=0.7)
-        
-        # self.mixtral = Ollama(
-        #         # model="nous-hermes2-mixtral:8x7b-dpo-q5_K_M",
-        #         model="starling-lm:7b-alpha-q6_K",
-        #         base_url="http://localhost:11434",
-        #         verbose=True,
-        #         temperature=0,
-        #         top_p=0.9,
-        #         num_predict=-1,
-        #         mirostat=2,             
-        #         num_ctx=8192,
-        #     )
-        
-        # self.llm = Ollama(
-        #     # model="llama3:70b-instruct-q4_K_M",
-        #     # model="command-r:plus-Q4_K_M",
-        #     # model="dbrx:132b-instruct-q4_0",
-        #     model="WizardLM2:8x22B-Q4_K_M",
-        #     base_url="http://localhost:11434",
-        #     verbose=True,
-        #     temperature=0,
-        #     top_p=0.9,
-        #     num_predict=-1,
-        #     mirostat=2,
-        #     num_ctx=52000,
-        # )
-
-        # openai_api_key = 'taSncDAGzfe97eCUtEbeRUpGuAAWnypi0VE6y6JDj4ivqALV'
-        # # base_url = os.environ.get("OPENAI_API_BASE")
-        # # openai_api_key = os.environ.get("DEEPSEEK_API_KEY")
-        # base_url = 'http://localhost:8080/v1'
-        # self.llm = ChatOpenAI(model='accounts/fireworks/models/nous-hermes-2-mixtral-8x7b-dpo-fp8', verbose=True, temperature = 0, openai_api_key=openai_api_key, base_url=base_url) # Loading GPT-3.5
-    
-    def reddit_researcher(self, llm, search_tool):
-        return Agent(
-            role = "Senior Researcher",
-            goal=f"Find and explore the most exciting information on Reddit",
-            backstory="""You are an information expert and know how to discover exciting information.
-            You're great at finding interesting, exciting projects on any subreddit. You transform the scraped data into reports with specific content. Only data scraped from Reddit subreddits is used in the report.
-            """,
-            verbose=True,
-            allow_delegation=False,
-            tools=[search_tool],
-            max_iter=10,
-            llm=llm,
-            # function_calling_llm=llm,
-        )
-
-    def translator(self, llm):
-        return Agent(
-            role="translator",
-            goal="Translate text into the language of the specified country",
-            backstory="""As a professional translator, you are familiar with the languages ​​of various countries, and are especially able to translate with warmth and sensitivity based on the characteristics and habits of the target language. """,
-            verbose=True,
-            llm=llm,
-            allow_delegation=False,
-            max_iter=10,
-            # tools=[search_tool, ContentTools.read_content],
-        )
 
     # 需求分析，聊天
     def talker(self, llm):
@@ -88,8 +25,9 @@ class RedditAgents():
             """,
             verbose=True,
             llm=llm,
+            memory1=True,
             allow_delegation=True,
-            max_iter=5,
+            max_iter=15,
             # tools=[search_tool, ContentTools.read_content],
         )
     
@@ -129,7 +67,10 @@ class RedditAgents():
         return Agent(
             role="景点内部介绍专家",
             goal="为用户提供有关某个地方的详细的和旅游相关的信息。",
-            backstory="""你是单个旅游景点介绍专家Crane，可以介绍一个旅游景点内部状况的人。作为一个对景点了解深刻的人，你善于利用工具找到任何一个地点的详细信息。为了解决用户的需求，你将旅游有关的信息和用户分享。但是你只专注于每一个小景点里面的内容，对于它们之间的路线规划你是一窍不通的""",
+            backstory="""你是单个旅游景点介绍专家Crane，可以介绍一个旅游景点内部状况的人。作为一个对景点了解深刻的人，你善于利用工具找到任何一个地点的详细信息。为了解决用户的需求，你将旅游有关的信息和用户分享。但是你只专注于每一个小景点里面的内容，对于它们之间的路线规划你是一窍不通的
+            在完成目标的过程中你始终遵循以下内容，这是你的原则:
+                1. 回答必须是中文。
+            """,
             verbose=True,
             llm=llm,
             allow_delegation=False,
@@ -142,7 +83,10 @@ class RedditAgents():
         return Agent(
             role="用户的好友",
             goal="为同事提供用户没有提供的信息",
-            backstory="""你假装是用户的好友，你表现地对用户特别了解。你为了不被开除必须这么做，不然你就没用了。当别人问你有关用户的信息的时候，你就算不知道也会随机地提供一些答案，最好是他们听到之后会高兴的答案。""",
+            backstory="""你假装是用户的好友，你表现地对用户特别了解。你为了不被开除必须这么做，不然你就没用了。当别人问你有关用户的信息的时候，你就算不知道也会随机地提供一些答案，最好是他们听到之后会高兴的答案。
+            在完成目标的过程中你始终遵循以下内容，这是你的原则:
+                1. 回答必须是中文。
+            """,
             verbose=True,
             llm=llm,
             allow_delegation=False,

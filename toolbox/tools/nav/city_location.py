@@ -71,7 +71,7 @@ def parse_formatted_address(location):
 
 if __name__ == "__main__":
     event = {
-        "city": "上海",
-        "address": "同济大学"
+        "city": "厦门",
+        "address": "深圳市盐田区盐葵路大梅沙段148号"
     }
     print(loc_info(event))
