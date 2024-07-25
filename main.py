@@ -9,13 +9,27 @@ from tasks import RedditTasks
 from toolbox.get_route import GetRoute
 from toolbox.get_event_description import GetEventDescription
 from toolbox.get_events import GetEvents
+from toolbox.get_route_go_back import GetRouteGoBack
 from toolbox.tools.aggregation import result
 
 from langchain.schema import AgentFinish
 from typing import Union, List, Tuple, Dict
 from langchain_openai import ChatOpenAI
 # from file_io import save_markdown
+import logging
+import server
 
+# 配置logging
+logging.basicConfig(
+    level=logging.DEBUG,  # 设置日志级别为DEBUG
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler()  # 输出到控制台
+    ]
+)
+
+# 获取一个logger实例
+logger = logging.getLogger(__name__)
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -71,7 +85,10 @@ class TypewriterStreamHandler(BaseCallbackHandler):
         return super().on_llm_end(response, run_id=run_id, parent_run_id=parent_run_id, **kwargs)
 
 def run_crew(receiver):
-    print(receiver)
+    print('receiver loading')
+    print('receiver loaded')
+
+    print('LLM loading')
     llm = ChatOpenAI(
         model="deepseek-chat", 
         verbose=True, 
@@ -80,46 +97,101 @@ def run_crew(receiver):
         max_tokens=4096,
         callbacks=[TypewriterStreamHandler(delay=0.02,receiver=receiver)]
         )
+    print('LLM loaded')
 
+    print('agents loading')
     agents = RedditAgents()
+    print(f'agent loaded')
+    print('tasks loading')
     tasks = RedditTasks()
+    print(f'tasks loaded')
 
-    get_route=GetRoute()
-
+    print('loading each agent')
     talker = agents.talker(llm)
-    event_finder=agents.eventFinder(llm,[GetEvents()]),
-    event_teller=agents.eventTeller(llm,[GetEventDescription()]),
+    print(f'talker loaded')
+    event_finder=agents.eventFinder(llm,[GetEvents()])
+    print(f'event_finer loaded')
+    event_teller=agents.eventTeller(llm,[GetEventDescription()])
+    print(f'event_teller loaded')
     route_planner=agents.routePlanner(llm,[GetRoute()])
+    print(f'route_planner loaded')
+    go_back_planner=agents.gobackPlanner(llm,[GetRouteGoBack()])
+    print(f'go_back_planner loaded')
+    writer=agents.writer(llm)
+    print(f'writer loaded')
     friend=agents.friend(llm)
+    print(f'friend loaded')
 
+    print('loading each task')
+    task_talk_with_user = tasks.talk_with_user(agent=talker)
+    print(f'task_talk_with_user loaded')
+    task_get_events = tasks.get_events(agent=event_finder,context=[
+        #task_talk_with_user
+        ])
+    print(f'task_get_events loaded')
+    task_get_route = tasks.get_route(agent=route_planner,context=[
+        task_get_events,
+        #task_talk_with_user
+        ])
+    print(f'task_get_route loaded')
+    task_get_route_go_back = tasks.get_route_go_back(agent=go_back_planner,context=[
+        #task_talk_with_user
+        ])
+    print(f'task_get_route_go_back loaded')
+    task_get_desc = tasks.get_event_description(agent=event_teller,context=[
+        task_get_events,
+        #task_talk_with_user
+        ])
+    print(f'task_get_event_desc loaded')
     task1 = tasks.all(
-        agent=talker,
-        # start=input("from="),
-        # end=input("to="),
+        agent=writer,
+        context=[
+            #task_talk_with_user,
+            task_get_events,
+            task_get_desc,
+            task_get_route,
+            task_get_route_go_back
+            ]
     )
-
+    print(f'task_all loaded')
     # Create a new Crew instance
+    print('loading crew')
     crew = Crew(
-        agents=[talker,
-                agents.eventFinder(llm,[GetEvents()]),
-                agents.eventTeller(llm,[GetEventDescription()]),
-                route_planner,
-                friend,
-                ],
-        tasks=[task1
-                ],
+        agents=[
+            #talker,
+            event_finder,
+            event_teller,
+            route_planner,
+            go_back_planner,
+            writer,
+            ],
+        tasks=[
+            #task_talk_with_user,
+            task_get_events,
+            task_get_route_go_back,
+            task_get_route,
+            task_get_desc,
+            task1,
+            ],
         #process=Process.sequential,
         # memory=True
         # process=Process.hierarchical,
         # manager_llm=llm,
         # step_callback=lambda x: print_agent_output(x,"Reddit Agent")
     )
-
+    print(f'crew loaded\n{crew}')
+    print('crew kicking off...')
     # Kick of the crew
-    results = crew.kickoff(inputs={"input":"我要从福州到苏州玩", "task_input": "我要从福州到苏州玩"})
-
+    results = crew.kickoff(inputs={
+        "city_from":"北京",
+        "city_to": "上海"
+        })
+    print(f'finish')
     print("Crew usage", crew.usage_metrics)
 
     print("Crew work results:")
     print(results)
     return result
+
+if __name__ == "__main__":
+    run_crew(server.Receiver())

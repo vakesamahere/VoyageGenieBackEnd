@@ -46,7 +46,7 @@ def entertainment_data( des_city):
     place = get_city_num(des_city)
     places = [place]  # 例如，选择一个地点
     placenames = [des_city]  # 对应地点的名称
-    scope = random.randint(2, 5)  # 景点数量可以控制
+    scope = random.randint(10, 15)  # 景点数量可以控制
 
     sight_data = sight_items(places, placenames, scope)
     print(json.dumps(sight_data, indent=2, ensure_ascii=False))
