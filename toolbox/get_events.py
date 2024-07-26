@@ -48,5 +48,5 @@ class GetEvents(BaseTool):
         foods:Dict[str,Any]=food_data(city,_min,_max)
         sights:Dict[str,Any]=sight_data(city,_min,_max)
         # hotel:dict[str,Any]=hotel_data(city,_min,_max)
-        hotels={"count":1,"data":[{"address":"同济大学","city":"上海"}]}
+        
         return [foods,sights,hotels]

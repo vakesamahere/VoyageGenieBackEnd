@@ -15,6 +15,7 @@ from toolbox.tools.aggregation import result
 from langchain.schema import AgentFinish
 from typing import Union, List, Tuple, Dict
 from langchain_openai import ChatOpenAI
+from langchain_anthropic import ChatAnthropic
 # from file_io import save_markdown
 import logging
 import server
@@ -89,14 +90,24 @@ def run_crew(receiver):
     print('receiver loaded')
 
     print('LLM loading')
-    llm = ChatOpenAI(
-        model="deepseek-chat", 
+    # llm = ChatOpenAI(
+    #     model="deepseek-chat", 
+    #     verbose=True, 
+    #     temperature = 0,
+    #     streaming=True,
+    #     max_tokens=4096,
+    #     callbacks=[TypewriterStreamHandler(delay=0.02,receiver=receiver)]
+    #     )
+    # print(f'base_url: {llm.openai_api_base}')
+    llm = ChatAnthropic(
+        model="claude-3-5-sonnet@20240620", 
         verbose=True, 
         temperature = 0,
-        streaming=True,
+        top_p=0.9,
         max_tokens=4096,
-        callbacks=[TypewriterStreamHandler(delay=0.02,receiver=receiver)]
-        )
+        streaming=True,
+        callbacks=[TypewriterStreamHandler(delay=0.02, receiver=receiver)]
+    )
     print('LLM loaded')
 
     print('agents loading')

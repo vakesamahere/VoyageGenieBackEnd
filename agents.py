@@ -9,7 +9,7 @@ from langchain_community.llms import Ollama
 
 class RedditAgents():
 
-    # 需求分析，聊天
+    # 需求分析，聊天，暂时弃用
     def talker(self, llm):
         return Agent(
             role="旅行经理",
@@ -35,7 +35,7 @@ class RedditAgents():
             # tools=[search_tool, ContentTools.read_content],
         )
     
-    # 需求分析，聊天
+    # 撰写报告
     def writer(self, llm):
         return Agent(
             role="报告撰写师",

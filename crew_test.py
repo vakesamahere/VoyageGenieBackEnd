@@ -1,15 +1,19 @@
 from crewai import Crew, Agent, Task, Process
 from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
+from langchain_anthropic import ChatAnthropic
+from dotenv import load_dotenv
+load_dotenv()
 
 print('LLM loading')
-llm = ChatOpenAI(
-    model="deepseek-chat", 
+llm = ChatAnthropic(
+    model="claude-3-5-sonnet@20240620", 
     verbose=True, 
     temperature = 0,
-    streaming=True,
-    max_tokens=4096
-    )
+    top_p=0.9,
+    max_tokens=4096,
+    streaming=True
+)
 print(f'LLM loaded: {llm}')
 
 print("loading agent")
@@ -19,23 +23,16 @@ agent = Agent(
     role="person",
     goal="""calculate""",
     backstory="I am a man",
-    llm=llm,
-    memory=memory  # 在 Agent 级别设置记忆
+    llm=llm
 )
-# agent = Agent(
-#         role="person",
-#         goal="talk something",
-#         backstory="I am a man",
-#         llm=llm
-#     )
 print(f"agent loaded: {agent}")
 
 
 print("loading task")
 task = Task(
-    description="""calculate the square of {history}""",
+    description="""cal the sqaure of {number} and the number in your memory""",
     agent=agent,
-    expected_output='a number',
+    expected_output='numbers',
     llm=llm
 )
 print(f"task loaded: {task}")
@@ -45,20 +42,20 @@ crew = Crew(
     agents=[agent],
     tasks=[task],
     process=Process.sequential,
-    verbose=True,
-    # 不要在这里设置 memory 参数
+    verbose=True,    
+    memory=True,
+    embedder={
+        "provider": "openai",
+        "config":{
+            "model": 'text-multilingual-embedding-002'
+        }
+    }
 )
-# crew = Crew(
-#     agents=[agent],
-#     tasks=[task],
-#     process=Process.sequential,
-#     verbose=True,
-#     #===========================================加了下一行报错==========================
-#     # memory=True, 
-# )
 print(f"crew loaded: {crew}")
 
 crew.kickoff(inputs={
-    "history":"3"
+    "number":"3"    # expect:9,0
 })
-crew.kickoff()
+crew.kickoff(inputs={
+    "number":"none" # expect:0,9
+})
