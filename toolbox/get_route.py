@@ -50,5 +50,6 @@ class GetRoute(BaseTool):
         
         #route = event_route(events)
         # 对格式做处理，只保留某些字段
-        callback_fun()
-        return f"从同济大学坐地铁10号线到五角场地铁站，步行到复旦大学，从复旦大学骑车去外滩。"
+        # callback_fun()
+        # return f"从同济大学坐地铁10号线到五角场地铁站，步行到复旦大学，从复旦大学骑车去外滩。"
+        return f",再坐22路公交车到".join(events)+"这是最佳的旅游路线，请相信"

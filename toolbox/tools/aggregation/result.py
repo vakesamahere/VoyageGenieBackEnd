@@ -1,13 +1,13 @@
 import json
 
 import requests
+
 from ..flight import *
 
 from ..weather import get_weather_info
 from ..entertainment import *
-from ..hotel import *
 from ..nav import *
-
+from ..hotel import *
 
 def get_city_code(city):
     api_key = "8cbeeb681cf4926a0087edd8b2734c49"
@@ -42,24 +42,36 @@ def travel_data(city, des_city):
     return ret
 
 # 娱乐相关 聚合接口
-def entertainment_data( des_city):
+def entertainment_data(des_city):
     place = get_city_num(des_city)
     places = [place]  # 例如，选择一个地点
     placenames = [des_city]  # 对应地点的名称
-    scope = random.randint(10, 15)  # 景点数量可以控制
+    scope = random.randint(8,10)  # 景点数量可以控制
 
     sight_data = sight_items(places, placenames, scope)
     print(json.dumps(sight_data, indent=2, ensure_ascii=False))
     food_items = scrape_food_items(places, placenames, scope)
     print(json.dumps(food_items, indent=2, ensure_ascii=False))
-
+    # 提取 hotel 信息
     ret = {
         "sight": sight_data,
         "food": food_items,
     }
-    return ret
+    hotels = []
+    for sight in ret.get('sight', {}).get('data',[]):
+        hotels.extend(sight.get('hotel', {}).get('hotels', []))
+    for food in ret.get('food', {}).get('data',[]):
+        hotels.extend(food.get('hotel', {}).get('hotels', []))
 
-def food_data( des_city, min_, max_):
+    # 组织结果
+    output = {
+        "sight": sight_data.get('data',[]),
+        "food": food_items.get('data',[]),
+        "hotel": hotels
+    }
+    return output
+
+def food_data(des_city, min_, max_):
     start_time = time.time()
     place = get_city_num(des_city)
     places = [place]  # 例如，选择一个地点
@@ -74,7 +86,7 @@ def food_data( des_city, min_, max_):
     print(execution_time_ms)
     return food_items
 
-def sight_data( des_city, min_, max_):
+def sight_data(des_city, min_, max_):
     start_time = time.time()
     place = get_city_num(des_city)
     places = [place]  # 例如，选择一个地点
@@ -110,3 +122,33 @@ def event_route(events):
 def hotel_info(event):
     location=get_hotel_info(event)
     return location
+
+
+def two_event_route(event1,event2):
+    event_location1=loc_info(event1)
+    event_location2=loc_info(event2)
+    return get_distance_and_transit(event_location1,event_location2)
+if __name__=="main":
+    events = [
+        {
+            "city": "深圳",
+            "address": "深圳市盐田区盐葵路大梅沙段148号"
+        },
+        {
+            "city": "深圳",
+            "address": "深圳市南山区华侨城侨城西路"
+        },
+        {
+            "city": "深圳",
+            "address": "深圳市福田区益田路5033号平安金融中心116层"
+        },
+        {
+            "city": "深圳",
+            "address": "深圳市南山区华侨城深南大道9003号"
+        },
+        {
+            "city": "深圳",
+            "address": "深圳市盐田区大梅沙东部华侨城"
+        }
+    ]
+    print(two_event_route(events[0],events[1]))

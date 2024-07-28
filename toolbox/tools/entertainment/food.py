@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup as BS
 import time
 import re
 
+from ..hotel import *
 from ..entertainment import get_city_num
 
 headers = {
@@ -97,6 +98,7 @@ def process_item(v, req, base2):
             tmp["city"] = req["place"]
             tmp["address"] = addr
             tmp["store"] = store
+            tmp["hotel"]=get_hotel_info({"city": req["place"], "address": addr})
             return tmp
     except Exception as e:
         print(f"Error processing item: {e}")

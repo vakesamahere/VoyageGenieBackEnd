@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup as BS
 import time
 import re
 import concurrent.futures
-
+from ..hotel import *
 from ..entertainment import get_city_num
 
 headers = {
@@ -98,6 +98,7 @@ def request_real_link(link, req):
         "address": addr,
         "score": score,
         "rank": rank,
+        "hotel":get_hotel_info({"city":req["place"],"address":addr})
     }
 
     return data

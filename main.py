@@ -117,86 +117,103 @@ def run_crew(receiver):
     tasks = RedditTasks()
     print(f'tasks loaded')
 
-    print('loading each agent')
-    talker = agents.talker(llm)
-    print(f'talker loaded')
-    event_finder=agents.eventFinder(llm,[GetEvents()])
-    print(f'event_finer loaded')
-    event_teller=agents.eventTeller(llm,[GetEventDescription()])
-    print(f'event_teller loaded')
-    route_planner=agents.routePlanner(llm,[GetRoute()])
-    print(f'route_planner loaded')
-    go_back_planner=agents.gobackPlanner(llm,[GetRouteGoBack()])
-    print(f'go_back_planner loaded')
-    writer=agents.writer(llm)
-    print(f'writer loaded')
-    friend=agents.friend(llm)
-    print(f'friend loaded')
+    def crew():
+        print('loading each agent')
+        manager = agents.manager(llm)
+        print(f'manager loaded')
+        event_finder=agents.eventFinder(llm,[GetEvents()])
+        print(f'event_finer loaded')
+        event_teller=agents.eventTeller(llm,[GetEventDescription()])
+        print(f'event_teller loaded')
+        route_planner=agents.routePlanner(llm,[GetRoute()])
+        print(f'route_planner loaded')
+        go_back_planner=agents.gobackPlanner(llm,[GetRouteGoBack()])
+        print(f'go_back_planner loaded')
+        writer=agents.writer(llm)
+        print(f'writer loaded')
+        friend=agents.friend(llm)
+        print(f'friend loaded')
 
-    print('loading each task')
-    task_talk_with_user = tasks.talk_with_user(agent=talker)
-    print(f'task_talk_with_user loaded')
-    task_get_events = tasks.get_events(agent=event_finder,context=[
-        #task_talk_with_user
-        ])
-    print(f'task_get_events loaded')
-    task_get_route = tasks.get_route(agent=route_planner,context=[
-        task_get_events,
-        #task_talk_with_user
-        ])
-    print(f'task_get_route loaded')
-    task_get_route_go_back = tasks.get_route_go_back(agent=go_back_planner,context=[
-        #task_talk_with_user
-        ])
-    print(f'task_get_route_go_back loaded')
-    task_get_desc = tasks.get_event_description(agent=event_teller,context=[
-        task_get_events,
-        #task_talk_with_user
-        ])
-    print(f'task_get_event_desc loaded')
-    task1 = tasks.all(
-        agent=writer,
-        context=[
-            #task_talk_with_user,
+        print('loading each task')
+        # task_talk_with_user = tasks.talk_with_user(agent=talker)
+        # print(f'task_talk_with_user loaded')
+        task_get_events = tasks.get_events(agent=event_finder,context=[
+            #task_talk_with_user
+            ])
+        print(f'task_get_events loaded')
+        task_get_route = tasks.get_route(agent=route_planner,context=[
             task_get_events,
-            task_get_desc,
-            task_get_route,
-            task_get_route_go_back
-            ]
-    )
-    print(f'task_all loaded')
-    # Create a new Crew instance
-    print('loading crew')
-    crew = Crew(
-        agents=[
-            #talker,
-            event_finder,
-            event_teller,
-            route_planner,
-            go_back_planner,
-            writer,
-            ],
-        tasks=[
-            #task_talk_with_user,
+            #task_talk_with_user
+            ])
+        print(f'task_get_route loaded')
+        task_get_route_go_back = tasks.get_route_go_back(agent=go_back_planner,context=[
+            #task_talk_with_user
+            ])
+        print(f'task_get_route_go_back loaded')
+        task_get_desc = tasks.get_event_description(agent=event_teller,context=[
             task_get_events,
-            task_get_route_go_back,
-            task_get_route,
-            task_get_desc,
-            task1,
-            ],
-        #process=Process.sequential,
-        # memory=True
-        # process=Process.hierarchical,
-        # manager_llm=llm,
-        # step_callback=lambda x: print_agent_output(x,"Reddit Agent")
-    )
-    print(f'crew loaded\n{crew}')
+            #task_talk_with_user
+            ])
+        print(f'task_get_event_desc loaded')
+        task1 = tasks.all(
+            agent=writer,
+            context=[
+                #task_talk_with_user,
+                task_get_events,
+                task_get_desc,
+                task_get_route,
+                task_get_route_go_back
+                ]
+        )
+        print(f'task_all loaded')
+        # Create a new Crew instance
+        print('loading crew')
+        crew = Crew(
+            agents=[
+                #talker,
+                event_finder,
+                # event_teller,
+                route_planner,
+                go_back_planner,
+                writer,
+                ],
+            tasks=[
+                #task_talk_with_user,
+                # task_get_events,
+                # task_get_route_go_back,
+                # task_get_route,
+                # task_get_desc,
+                task1,
+                ],
+            manager_agent=manager,
+            process=Process.hierarchical
+            # memory=True,
+            # embedder={
+            #     "provider": "openai",
+            #     "config":{
+            #         "model": 'text-multilingual-embedding-002'
+            #     }
+            # }
+
+            # process=Process.hierarchical,
+            # manager_llm=llm,
+            # step_callback=lambda x: print_agent_output(x,"Reddit Agent")
+        )
+        print(f'crew loaded\n{crew}')
+        return crew
     print('crew kicking off...')
     # Kick of the crew
-    results = crew.kickoff(inputs={
-        "city_from":"北京",
-        "city_to": "上海"
-        })
+    history="none"
+    while True:
+        results = crew().kickoff(inputs={
+            "city_from":"",
+            "city_to": "",
+            "history":history
+            })
+        history+=f"AI:{results.raw}\n"
+        new_input=input("chat with AI: ")
+        history+=f"user:{new_input}\n"
+        print(f"history:{history}")
     print(f'finish')
     print("Crew usage", crew.usage_metrics)
 

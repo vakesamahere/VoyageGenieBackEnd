@@ -1,9 +1,10 @@
 from flask import Flask
 
-from nav import *
-from aggregation import *
+from .nav import *
+from .aggregation import *
 import concurrent.futures
-from hotel import *
+from .hotel import *
+
 
 app = Flask(__name__)
 
@@ -17,13 +18,13 @@ def travel():
 
 @app.route('/food')
 def food():
-    data = food_data("北京", "上海", 3, 5)
+    data = food_data("上海", 3, 5)
     return data
 
 
 @app.route('/sight')
 def sight():
-    data = sight_data("天津", "北京", 3, 5)
+    data = sight_data("北京", 3, 5)
     return data
 
 
@@ -96,18 +97,28 @@ def loc():
             "address": "北京市东城区天坛路甲1号"
         }
     ]
-    return event_route(events)
 
+    res = event_route(events)
+    return res
 
 
 @app.route('/hotel')
 def hotel():
     event = {
-        "city": "北京",
-        "address": "北京市延庆区G6京藏高速58号出口"
+        "city": "上海",
+        "address": "同济大学"
     }
     return hotel_info(event)
-
-
+@app.route("/two")
+def two():
+    event1= {
+        "city": "上海",
+        "address": "同济大学"
+    }
+    event2 = {
+        "city": "上海",
+        "address": "复旦大学"
+    }
+    return two_event_route(event1,event2)
 if __name__ == '__main__':
     app.run()

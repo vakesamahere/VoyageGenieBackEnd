@@ -2,6 +2,7 @@ import os
 
 import requests
 from dotenv import load_dotenv
+
 from ..nav import loc_info
 
 load_dotenv()  # 从.env文件加载环境变量
@@ -19,7 +20,7 @@ def get_hotel_info(event):
         "key": api_key,
         "location": loc['location'],
         "radius": 5000,  # 5km范围内
-        "types": 100105,  # 经济连锁酒店类型
+        "types": 100000,  # 经济连锁酒店类型
     }
     # 发送GET请求
     response = requests.get(base_url, params=params)
@@ -45,7 +46,13 @@ def parse_poi_response(response_json):
     # 提取POI信息
     pois = response_json.get('pois', [])
     hotels = []
+    # 限制数量
+    limit = 2
+    index = 0
     for poi in pois:
+        if index >= limit:
+            break
+        index+=1
         name = poi.get('name', 'N/A')
         address = poi.get('address', 'N/A')
         distance = poi.get('distance', 'N/A')
@@ -65,11 +72,11 @@ def parse_poi_response(response_json):
         "hotels": hotels
     }
 
-# if __name__ == '__main__':
-#     event = {
-#         "city": "上海",
-#         "address": "上海市浦东新区川沙新镇黄赵路310号"
-#     }
-#     hotel = get_hotel_info(event)
-#     for h in hotel['hotels']:
-#         print(h)
+if __name__ == '__main__':
+    event = {
+        "city": "上海",
+        "address": "上海市浦东新区川沙新镇黄赵路310号"
+    }
+    hotel = get_hotel_info(event)
+    for h in hotel['hotels']:
+        print(h)

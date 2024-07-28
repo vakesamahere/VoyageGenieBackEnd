@@ -69,6 +69,7 @@ def parse_formatted_address(location):
     except requests.exceptions.RequestException as e:
         return f"请求发生错误: {e}"
 
+
 if __name__ == "__main__":
     event = {
         "city": "厦门",
