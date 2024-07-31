@@ -7,8 +7,7 @@ from langchain_community.llms import Ollama
 # Human Tools
 # human_tools = load_tools(["human"])
 
-class RedditAgents():
-
+class RedditAgents():        
     # manager
     def manager(self, llm):
         return Agent(
@@ -46,7 +45,7 @@ class RedditAgents():
             在完成目标的过程中你始终遵循以下内容，这是你的原则:
                 1. 写的东西必须是中文。
                 2. 旅行计划分为四个部分：第一要起一个标题；第二要概况一下这段旅行；第三要对每条路线作出介绍；第四要把涉及到的景点分别做出详细介绍
-                3. 你的写作内容必须严格按照同事给你的资料，只有他们说的才是符合用户要求的，你平常的经验不一定符合。
+                . 你的写作内容必须严格按照同事给你的资料，只有他们说的才是符合用户要求的，你平常的经验不一定符合。
             """,
             verbose=True,
             allow_delegation=False,
@@ -65,7 +64,7 @@ class RedditAgents():
             verbose=True,
             llm=llm,
             allow_delegation=False,
-            max_iter=2,
+            max_iter=5,
             tools=tools,
         )
     
@@ -79,7 +78,7 @@ class RedditAgents():
             verbose=True,
             llm=llm,
             allow_delegation=False,
-            max_iter=2,
+            max_iter=5,
             tools=tools,
         )
     
@@ -96,7 +95,7 @@ class RedditAgents():
             verbose=True,
             llm=llm,
             allow_delegation=False,
-            max_iter=2,
+            max_iter=5,
             tools=tools,
         )
     
@@ -112,7 +111,7 @@ class RedditAgents():
             verbose=True,
             llm=llm,
             allow_delegation=False,
-            max_iter=2,
+            max_iter=5,
             tools=tools,
         )
     
@@ -130,6 +129,6 @@ class RedditAgents():
             verbose=True,
             llm=llm,
             allow_delegation=False,
-            max_iter=1,
+            max_iter=5,
             tools=tools,
         )

@@ -13,12 +13,11 @@ from toolbox.get_route_go_back import GetRouteGoBack
 from toolbox.tools.aggregation import result
 
 from langchain.schema import AgentFinish
-from typing import Union, List, Tuple, Dict
+from typing import Union, List, Tuple, Dict, Any
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 # from file_io import save_markdown
 import logging
-import server
 
 # 配置logging
 logging.basicConfig(
@@ -58,13 +57,13 @@ class TypewriterStreamHandler(BaseCallbackHandler):
 
     def on_llm_new_token(self, token: str, **kwargs) -> None:
         current_time = time.time()
+        self.receiver_send(token)
         time_since_last_output = current_time - self.last_output_time
 
         if time_since_last_output < self.delay:
             time.sleep(self.delay - time_since_last_output)
-
+            
         if token.strip():  # 如果token不是空白字符
-            self.receiver_send(token)
             for char in token:
                 sys.stdout.write(char)
                 sys.stdout.flush()
@@ -72,20 +71,20 @@ class TypewriterStreamHandler(BaseCallbackHandler):
         elif '\n' in token:  # 如果是换行符
             sys.stdout.write('\n')
             sys.stdout.flush()
-            self.receiver_send('\n')
             time.sleep(self.delay * 2)  # 在换行时稍微多等一下
         else:  # 其他空白字符
             sys.stdout.write(token)
             sys.stdout.flush()
-            self.receiver_send(token)
 
         self.last_output_time = time.time()
-
-    def on_llm_end(self, response: LLMResult, *, run_id: UUID, parent_run_id: UUID | None = None, **kwargs: Ollama) -> Ollama:
-        self.receiver_send('<END>')
-        return super().on_llm_end(response, run_id=run_id, parent_run_id=parent_run_id, **kwargs)
-
-def run_crew(receiver):
+    
+    def on_tool_end(self, output: Any, *, run_id: UUID, parent_run_id: UUID | None = None, **kwargs: Any) -> Any:
+        print(output)
+        with open('./output/on_tool_end.txt','a',encoding='utf-8') as f:
+            f.write(str(output))
+        return super().on_tool_end(output, run_id=run_id, parent_run_id=parent_run_id, **kwargs)
+ 
+def run_crew(receiver,msg):
     print('receiver loading')
     print('receiver loaded')
 
@@ -121,13 +120,19 @@ def run_crew(receiver):
         print('loading each agent')
         manager = agents.manager(llm)
         print(f'manager loaded')
-        event_finder=agents.eventFinder(llm,[GetEvents()])
+        event_finder=agents.eventFinder(llm,[GetEvents(
+            # receiver
+            )])
         print(f'event_finer loaded')
         event_teller=agents.eventTeller(llm,[GetEventDescription()])
         print(f'event_teller loaded')
-        route_planner=agents.routePlanner(llm,[GetRoute()])
+        route_planner=agents.routePlanner(llm,[GetRoute(
+            # receiver
+            )])
         print(f'route_planner loaded')
-        go_back_planner=agents.gobackPlanner(llm,[GetRouteGoBack()])
+        go_back_planner=agents.gobackPlanner(llm,[GetRouteGoBack(
+            # receiver
+            )])
         print(f'go_back_planner loaded')
         writer=agents.writer(llm)
         print(f'writer loaded')
@@ -203,17 +208,23 @@ def run_crew(receiver):
         return crew
     print('crew kicking off...')
     # Kick of the crew
-    history="none"
-    while True:
-        results = crew().kickoff(inputs={
-            "city_from":"",
-            "city_to": "",
-            "history":history
-            })
-        history+=f"AI:{results.raw}\n"
-        new_input=input("chat with AI: ")
-        history+=f"user:{new_input}\n"
-        print(f"history:{history}")
+    # history="user: 明天从北京去上海玩\n"
+    # while True:
+    #     results = crew().kickoff(inputs={
+    #         "city_from":"",
+    #         "city_to": "",
+    #         "history":history
+    #         })
+    #     history+=f"AI:{results.raw}\n"
+    #     new_input=input("chat with AI: ")
+    #     history+=f"user:{new_input}\n"
+    #     print(f"history:{history}")
+    history=msg
+    results = crew().kickoff(inputs={
+        "city_from":"",
+        "city_to": "",
+        "history":history
+        })
     print(f'finish')
     print("Crew usage", crew.usage_metrics)
 
@@ -222,4 +233,5 @@ def run_crew(receiver):
     return result
 
 if __name__ == "__main__":
-    run_crew(server.Receiver())
+    import server
+    run_crew(server.Receiver(),'明天从北京去上海玩')

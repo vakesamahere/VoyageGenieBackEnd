@@ -22,6 +22,7 @@ class Receiver:
     def __init__(self) -> None:
         self.tokens=[]
         self.cache_string=""
+        self.events=[]
 
     def cache_load(self,string):
         self.cache_string+=string
@@ -30,6 +31,16 @@ class Receiver:
         output=self.cache_string
         self.cache_string=""
         return output
+    
+    def event_cache_load(self,content:str):
+        self.events.append(content)
+    
+    def event_cache_out(self):
+        if len(self.events):
+            output = self.events.pop(0)
+            return output
+        else:
+            return ""
     
     def deq(self):
         if not self.tokens:
@@ -52,9 +63,10 @@ class Receiver:
 def hello_world():
     return render_template('index.html')
 
-@app.route('/stream',methods=['POST'])
+@app.route('/chat',methods=['POST'])
 async def streama():
     data = request.get_json()
+    msg=data.get('message',"")
     logging.debug(data)
     r=Receiver()
     r.cache_load("test cache loading success")
@@ -67,19 +79,20 @@ async def streama():
 
     loop=asyncio.get_event_loop()
     # loop.run_in_executor(executor,test,r)
-    loop.run_in_executor(executor,run_crew,r)
+    loop.run_in_executor(executor,run_crew,r,msg)
 
     def eventStream():
         id = 0
         while True:
             time.sleep(1)
             data=r.cache_out()
-            if data == '':
-                continue
-            if data == '<END>':
+            if data != '':
                 yield 'id: {}\nevent: add\ndata: {}\n\n'.format(id,data)
-                break
-            yield 'id: {}\nevent: add\ndata: {}\n\n'.format(id,data)
+                id+=1
+            event=r.event_cache_out()
+            if event !='':
+                yield 'id: {}\nevent: event\ndata: {}\n\n'.format(id,data)
+                id+=1
     return Response(eventStream(), mimetype="text/event-stream")
 
 if __name__ == '__main__':

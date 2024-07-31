@@ -20,8 +20,8 @@ class GetRouteGoBackSchema(BaseModel):
         description="目的地坐在的城市"
     )
 
-def callback_fun():
-    print('GET_ROUTE'+'='*100)
+def callback_fun(r,content):
+    r.event_cache_load(f"[get_route_go_back]{json.dumps(content)}")
 
 class GetRouteGoBack(BaseTool):
     """一个工具，作用：在游玩的目的地输入若干个地点，输出路线。记住，只关乎目的地内部的具体游玩路线，和出发地到目的地的通行没有关系"""
@@ -32,7 +32,10 @@ class GetRouteGoBack(BaseTool):
         "一个工具，作用：输出旅游出发地到目的地的往返路线。记住，只关乎出发地到目的地的通行，和目的地内部的具体游玩路线没有关系"
     )
     args_schema: Type[BaseModel] = GetRouteGoBackSchema
-    callbacks=callback_fun
+    # callbacks=callback_fun
+
+    # def __init__(self,r):
+    #     self.receiver = r
 
     def _run(
         self,
@@ -41,7 +44,8 @@ class GetRouteGoBack(BaseTool):
     ) -> Dict[str,Any]:
         """Use the tool."""
         resultStrings=[]
-        callback_fun()
+        output = travel_data(city_from,city_to)
+        # callback_fun(self.receiver,output)
         #events=events.split(',')
 
         # for i in range(len(events)-1):
@@ -50,4 +54,4 @@ class GetRouteGoBack(BaseTool):
         # 对格式做处理，只保留某些字段
         # callback_fun()
         # return f"从{city_from}坐飞机到{city_to}，从{city_to}坐高铁回到{city_from}"
-        return travel_data(city_from,city_to)
+        return output
