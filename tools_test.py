@@ -21,17 +21,17 @@ import toolbox.tools.aggregation.result as tool
 
 
 
-# output=tool.event_route(events = [
-#         {
-#             "city": "北京",
-#             "address": "北京市延庆区G6京藏高速58号出口"
-#         },
-#         {
-#             "city": "北京",
-#             "address": "北京市西城区前海西街17号"
-#         }
-#     ]
-# )
+output=tool.event_route(events = [
+        {
+            "city": "北京",
+            "address": "北京市延庆区G6京藏高速58号出口"
+        },
+        {
+            "city": "北京",
+            "address": "北京市西城区前海西街17号"
+        }
+    ]
+)
 # output=tool.event_route(events = [
 #         {
 #             "city": "北京",
@@ -43,4 +43,4 @@ import toolbox.tools.aggregation.result as tool
 #         }
 #     ]
 # )
-# print(output)
+print(output)

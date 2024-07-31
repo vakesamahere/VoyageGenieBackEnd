@@ -28,7 +28,7 @@ class GetEvents(BaseTool):
     # callbacks=callback_fun
 
     # def __init__(self,r):
-    #     self.receiver = r
+    #     self.callbacks = r
 
     def _run(
         self,
@@ -43,9 +43,6 @@ class GetEvents(BaseTool):
         # callback_fun(self.receiver,op)
         return op
 
-class GetEventTool():
-    def __init__(self) -> None:
-        self.tool = GetEvents()
 
 test_output:Dict[str,List[Any]]={
     "sight": [

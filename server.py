@@ -49,8 +49,12 @@ class Receiver:
         item = self.tokens[0]
         self.tokens.pop(0)
         return item
+    
     def enq(self,item):
         self.tokens.append(item)
+
+    def test(self,context):
+        print(context)
 
 # def get_message():
 #     """this could be any function that blocks until data is ready"""
@@ -83,18 +87,27 @@ async def streama():
 
     def eventStream():
         id = 0
+        flag=0
+        sum = 0
         while True:
             time.sleep(1)
             data=r.cache_out()
             if data != '':
                 yield 'id: {}\nevent: add\ndata: {}\n\n'.format(id,data)
                 id+=1
+                flag = 1
             event=r.event_cache_out()
             if event !='':
-                yield 'id: {}\nevent: event\ndata: {}\n\n'.format(id,data)
+                yield 'id: {}\nevent: event\ndata: {}\n\n'.format(id,event)
                 id+=1
+                flag = 1
+            if flag == 0:
+                sum +=1
+            else:
+                sum = 0
+            if sum > 180:
+                return
     return Response(eventStream(), mimetype="text/event-stream")
 
 if __name__ == '__main__':
-    app.run(debug=True)
-
+    app.run(debug=True,host='0.0.0.0',port=6000)

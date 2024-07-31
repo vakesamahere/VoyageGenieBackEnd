@@ -1,5 +1,6 @@
 import time, sys, json
 from uuid import UUID
+from functools import partial
 
 from crewai import Crew, Process
 from langchain_core.outputs import LLMResult
@@ -42,6 +43,20 @@ class StreamingStdOutCallbackHandler(BaseCallbackHandler):
     def on_llm_new_token(self, token: str, **kwargs) -> None:
         print(token, end="", flush=True)
 
+# tool回调处理器
+class ToolResultHandler(BaseCallbackHandler):
+    def __init__(self,receiver=None,tag="") -> None:
+        self.receiver = receiver
+        self.tag=tag
+    def on_tool_end(self, output: Any, *, run_id: UUID, parent_run_id: UUID | None = None, **kwargs: Any) -> Any:
+        # print("="*1000)
+        # print(str(output))
+        # print("="*1000)
+        if self.receiver:
+            #[事件名称]字典字符串
+            self.receiver.event_cache_load(f"[{self.tag}]{str(output)}")
+        return super().on_tool_end(output, run_id=run_id, parent_run_id=parent_run_id, **kwargs)
+    
 # 打字机效果回调处理器
 class TypewriterStreamHandler(BaseCallbackHandler):
     def __init__(self, delay=0.02,receiver=None):
@@ -121,16 +136,19 @@ def run_crew(receiver,msg):
         manager = agents.manager(llm)
         print(f'manager loaded')
         event_finder=agents.eventFinder(llm,[GetEvents(
+            callbacks=[ToolResultHandler(receiver=receiver,tag='get_events')]
             # receiver
             )])
         print(f'event_finer loaded')
         event_teller=agents.eventTeller(llm,[GetEventDescription()])
         print(f'event_teller loaded')
         route_planner=agents.routePlanner(llm,[GetRoute(
+            callbacks=[ToolResultHandler(receiver=receiver,tag='get_route')]
             # receiver
             )])
         print(f'route_planner loaded')
         go_back_planner=agents.gobackPlanner(llm,[GetRouteGoBack(
+            callbacks=[ToolResultHandler(receiver=receiver,tag='get_route_go_back')]
             # receiver
             )])
         print(f'go_back_planner loaded')
