@@ -118,6 +118,20 @@ def event_route(events):
     res = get_nav_route(events_loc)
     return res
 
+def event_route_start_with_loc(events):
+    # list[dict[str,any]]
+    # item:{
+    #     'location': location, * ->str x,y
+    #     'citycode': citycode, * ->citycode
+    #     'address': address, *->address
+    # }
+    # {'location': '113.978615,22.537872', 'citycode': '0755', 'address':'...'}
+    # 生成最优路线
+    events = generate_optimal_path(events)
+    # 生成导航路线方案
+    res = get_nav_route(events)
+    return res
+
 
 def hotel_info(event):
     location=get_hotel_info(event)

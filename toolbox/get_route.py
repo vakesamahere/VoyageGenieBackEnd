@@ -13,11 +13,11 @@ class GetRouteSchema(BaseModel):
     """Input"""
 
     events: List[Dict[str,Any]] = Field(
-        description="""所有需要途径的地点名字(字段name)和地址(字段address)，地址在导航上不会有太多歧义。如[{"name":"故宫","address":"北京市东城区景山前街4号"},{"name":"天安门","address":"北京市东城区长安街"}]"""
+        description="""所有需要途径的经纬度(location)、地址(字段address)、和城市代码(citycode)，地址在导航上不会有太多歧义。如[{'location': '113.978615,22.537872', 'citycode': '0755', 'address':'...'},...]"""
     )
-    city: str = Field(
-        description="目的地坐在的城市，这些地点所在的城市"
-    )
+    # city: str = Field(
+    #     description="目的地坐在的城市，这些地点所在的城市"
+    # )
 
 def callback_fun(r,content):
     r.event_cache_load(f"[get_route]{json.dumps(content)}")
@@ -39,7 +39,7 @@ class GetRoute(BaseTool):
     def _run(
         self,
         events: List[Dict[str,Any]],
-        city: str
+        # city: str
     ) -> Dict[str,List]:
         """Use the tool."""
         # resultStrings=[]
@@ -50,8 +50,10 @@ class GetRoute(BaseTool):
         #     resultStrings.append(f"从{events[i]}坐22路公交车到{events[i+1]}")
         # return ",再".join(resultStrings)+'.'
 
-        input_list=[{"address":item.get('address',""),"city":city} for item in events if item.get('address',"")!=""]
-        route = event_route(input_list)
+        # input_list=[{"address":item.get('address',""),"city":city} for item in events if item.get('address',"")!=""]
+        # route = event_route(input_list)
+        # route = event_route_start_with_loc(input_list)
+        route = event_route_start_with_loc(events)
         # callback_fun(self.receiver,route)
         return route
 

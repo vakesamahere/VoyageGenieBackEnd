@@ -9,8 +9,11 @@ from tasks import RedditTasks
 
 from toolbox.get_route import GetRoute
 from toolbox.get_event_description import GetEventDescription
-from toolbox.get_events import GetEvents
+# from toolbox.get_events import GetEvents
 from toolbox.get_route_go_back import GetRouteGoBack
+from toolbox.browser_tools import BrowserTools
+from toolbox.search_tools import SearchTools
+from toolbox.get_event_g import GetEvents
 from toolbox.tools.aggregation import result
 
 from langchain.schema import AgentFinish
@@ -120,7 +123,7 @@ def run_crew(receiver,msg):
         top_p=0.9,
         max_tokens=4096,
         streaming=True,
-        callbacks=[TypewriterStreamHandler(delay=0.02, receiver=receiver)]
+        callbacks=[TypewriterStreamHandler(delay=0.01, receiver=receiver)]
     )
     print('LLM loaded')
 
@@ -135,10 +138,14 @@ def run_crew(receiver,msg):
         print('loading each agent')
         manager = agents.manager(llm)
         print(f'manager loaded')
-        event_finder=agents.eventFinder(llm,[GetEvents(
-            callbacks=[ToolResultHandler(receiver=receiver,tag='get_events')]
-            # receiver
-            )])
+        event_finder=agents.eventFinder(llm,[
+                GetEvents(
+                    callbacks=[ToolResultHandler(receiver=receiver,tag='get_events')]
+                    # receiver
+                ),
+                # SearchTools.search_internet,
+                # BrowserTools.scrape_and_summarize_website
+            ])
         print(f'event_finer loaded')
         event_teller=agents.eventTeller(llm,[GetEventDescription()])
         print(f'event_teller loaded')
@@ -244,7 +251,6 @@ def run_crew(receiver,msg):
         "history":history
         })
     print(f'finish')
-    print("Crew usage", crew.usage_metrics)
 
     print("Crew work results:")
     print(results)
@@ -252,4 +258,4 @@ def run_crew(receiver,msg):
 
 if __name__ == "__main__":
     import server
-    run_crew(server.Receiver(),'明天从北京去上海玩')
+    run_crew(server.Receiver(),'明天从北京去上海玩，喜欢看书')

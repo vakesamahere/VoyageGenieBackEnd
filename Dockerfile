@@ -22,6 +22,7 @@ RUN pip install python-dotenv
 RUN pip install pydantic 
 RUN pip install requests 
 RUN pip install beautifulsoup4
+RUN pip install unstructured
 RUN pip install crewai 
 
 # 开放6000端口
