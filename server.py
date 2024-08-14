@@ -14,7 +14,7 @@ from concurrent.futures import ThreadPoolExecutor
 app = Flask(__name__)
 CORS(app)
 
-DELAY=0.05
+# DELAY=0.05
 
 executor = ThreadPoolExecutor(max_workers=5)
 
@@ -23,13 +23,20 @@ class Receiver:
         self.tokens=[]
         self.cache_string=""
         self.events=[]
+        self.lock = threading.Lock()
+        self.finish = False
+        self.function_used=False
+        self.tool_result=[]
+        self.writer_output=""
 
     def cache_load(self,string):
-        self.cache_string+=string
+        with self.lock:
+            self.cache_string+=string
 
     def cache_out(self):
-        output=self.cache_string
-        self.cache_string=""
+        with self.lock:
+            output=self.cache_string
+            self.cache_string=""
         return output
     
     def event_cache_load(self,content:str):
@@ -71,6 +78,9 @@ def hello_world():
 async def streama():
     data = request.get_json()
     msg=data.get('message',"")
+    if '%test%' in msg:
+        _test = True
+    rep=data.get('rep',"\n")
     logging.debug(data)
     r=Receiver()
     r.cache_load("test cache loading success")
@@ -83,25 +93,31 @@ async def streama():
 
     loop=asyncio.get_event_loop()
     # loop.run_in_executor(executor,test,r)
-    loop.run_in_executor(executor,run_crew,r,msg)
+    loop.run_in_executor(executor,run_crew,r,msg,rep,_test)
 
     def eventStream():
         id = 0
         flag=0
         sum = 0
         while True:
-            time.sleep(1)
+            time.sleep(0.5)
             data=r.cache_out()
+            flag=0
             if data != '':
                 yield 'id: {}\nevent: add\ndata: {}\n\n'.format(id,data)
                 id+=1
                 flag = 1
+            time.sleep(0.5)
             event=r.event_cache_out()
             if event !='':
                 yield 'id: {}\nevent: event\ndata: {}\n\n'.format(id,event)
                 id+=1
                 flag = 1
             if flag == 0:
+                if r.finish:
+                    id+=1
+                    yield 'id: {}\nevent: event\ndata: {}\n\n'.format(id,'[end]')
+                    return
                 sum +=1
             else:
                 sum = 0

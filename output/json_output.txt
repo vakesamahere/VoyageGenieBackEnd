@@ -1,0 +1,65 @@
+{
+  "title": "书香上海：文学爱好者的48小时魔都之旅",
+  "cover": "http://aos-cdn-image.amap.com/sns/ugccomment/69e67027-91ce-46b5-a12a-eb36af4c4c43.jpg",
+  "text": "这是一次为期两天的上海文化之旅，专为热爱阅读的旅行者量身定制。行程涵盖了上海最著名的几家书店，让您在繁华都市中感受浓郁的文化氛围。除了文学气息，您还将品尝到上海的美食，体验这座国际大都市的魅力。\n\n第一天，您将从北京飞往上海，入住布丁酒店。随后探访朵云书院旗舰店、外文书店和上海书城，晚上在Ministry Of Crab享用晚餐。第二天，您可以重访最喜欢的书店或继续探索，午餐品尝南京大牌档的本帮菜，下午可选择参观上海博物馆或漫步南京路步行街，之后返回北京。\n\n这份旅行计划充分考虑了您对阅读的热爱，同时也兼顾了上海的美食和文化体验。希望这次旅行能让您在书香中感受上海的魅力，留下难忘的回忆。",
+  "routes": [
+    {
+      "events": [
+        {
+          "name": "北京到上海",
+          "description": "乘坐厦门航空MF1航班从北京飞往上海，起飞时间：2024年8月6日01:44，到达时间：03:27，飞行时间约1小时43分钟。",
+          "images": ["http://store.is.autonavi.com/showpic/dc41441c86f36df42fef90810ba85dc8"]
+        },
+        {
+          "name": "入住布丁酒店",
+          "description": "抵达上海后入住布丁酒店(上海华师大金沙江地铁站店)。地址：上海市普陀区凯旋北路1555弄2号(金沙江路地铁站1口步行360米)。",
+          "images": ["http://store.is.autonavi.com/showpic/b937a5a4b1d16ca4dd9d5418a6dfb5b7"]
+        },
+        {
+          "name": "朵云书院·旗舰店",
+          "description": "参观位于上海中心大厦的朵云书院旗舰店，这里是一个集阅读、文化交流、艺术展览于一体的综合文化空间。",
+          "images": ["http://aos-cdn-image.amap.com/sns/ugccomment/69e67027-91ce-46b5-a12a-eb36af4c4c43.jpg", "https://aos-comment.amap.com/B0G0P9FUWI/comment/0616e7e1b2c54ff5797949d89b99c069_2048_2048_80.jpg"]
+        },
+        {
+          "name": "外文书店",
+          "description": "参观位于福州路的外文书店总店，这里是上海最大的外文书籍零售商，拥有丰富的外语书籍资源。",
+          "images": ["http://store.is.autonavi.com/showpic/1e37636e3c0a2ad30dbe138a71027f96", "http://store.is.autonavi.com/showpic/b76cc0397c741f1659553caa52df79fb"]
+        },
+        {
+          "name": "上海书城",
+          "description": "参观位于福州路的上海书城，这里是上海最大的综合性书店之一，藏书丰富，涵盖各个领域。",
+          "images": ["https://aos-comment.amap.com/B0FFLPX4S0/comment/1829a2ff77f17d6f8a6f3ce1748a492f_2048_2048_80.jpg", "https://aos-comment.amap.com/B0FFLPX4S0/comment/c0f2b81b894a19d8ec609a1caadaadfa_2048_2048_80.jpg"]
+        },
+        {
+          "name": "晚餐at Ministry Of Crab",
+          "description": "在人民公园内的Ministry Of Crab享用晚餐，品尝新鲜美味的螃蟹料理。",
+          "images": ["http://store.is.autonavi.com/showpic/5aad3f8e29e515e07cfb00a5d508bbc9", "http://store.is.autonavi.com/showpic/46f5a067dfa9716a08fabea9c1478349"]
+        }
+      ]
+    },
+    {
+      "events": [
+        {
+          "name": "自由探索书店",
+          "description": "上午可选择重访最喜欢的书店或继续探索其他书店。",
+          "images": ["https://aos-comment.amap.com/B0G0P9FUWI/comment/2b2c97eb9136a5cfb3c3cad8964214d8_2048_2048_80.jpg"]
+        },
+        {
+          "name": "午餐at南京大牌档",
+          "description": "在人民广场的南京大牌档品尝正宗的上海本帮菜，如小笼包、生煎馒头等。",
+          "images": ["http://store.is.autonavi.com/showpic/4404d831373e3e06a3240e96e4f87e7b", "http://store.is.autonavi.com/showpic/581a15380f0dc0211b0e70b1d892647d"]
+        },
+        {
+          "name": "上海博物馆/南京路步行街",
+          "description": "下午可选择参观上海博物馆，了解中国历史文化，或漫步南京路步行街，感受上海的现代都市魅力。",
+          "images": ["http://s-pic.oss-cn-beijing.aliyuncs.com/desensitize/images/publish/9a46f121e0f1c385e372982984e825c7.jpg"]
+        },
+        {
+          "name": "返程北京",
+          "description": "晚上从上海返回北京，建议提前3小时到达机场，可参考去程选择交通方式。",
+          "images": ["http://store.is.autonavi.com/showpic/03c6f0fa44c25ff664ceb393ee5a1d6d"]
+        }
+      ]
+    }
+  ]
+}

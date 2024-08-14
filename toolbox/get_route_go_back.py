@@ -45,13 +45,6 @@ class GetRouteGoBack(BaseTool):
         """Use the tool."""
         resultStrings=[]
         output = travel_data(city_from,city_to)
-        # callback_fun(self.receiver,output)
-        #events=events.split(',')
-
-        # for i in range(len(events)-1):
-        #     resultStrings.append(f"从{events[i]}坐22路公交车到{events[i+1]}")
-        # return ",再".join(resultStrings)+'.'
-        # 对格式做处理，只保留某些字段
-        # callback_fun()
-        # return f"从{city_from}坐飞机到{city_to}，从{city_to}坐高铁回到{city_from}"
+        with open('./output/get_route_go_back_result','w',encoding='utf-8') as f:
+            f.write(str(output))
         return output

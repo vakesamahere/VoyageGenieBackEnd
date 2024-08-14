@@ -492,6 +492,11 @@ class GetEvents(BaseTool):
 
         # 处理返回的数据
         # 这里可以根据实际需要进行数据的处理和转换
+        with open('./output/get_event_result','w',encoding='utf-8') as f:
+            f.write(str({
+                'success': True,
+                'data': places_data
+            }))
         return {
             'success': True,
             'data': places_data

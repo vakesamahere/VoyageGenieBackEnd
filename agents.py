@@ -54,6 +54,24 @@ class RedditAgents():
             # tools=[search_tool, ContentTools.read_content],
         )
     
+    # json报告
+    def post_writer(self, llm):
+        return Agent(
+            role="报告撰写师",
+            goal="根据同事的信息，为用户撰写一篇旅行攻略的帖子",
+            backstory="""你是报告撰写师Forever。作为一个善于写作而且严谨的人，你在写作过程中总是严格依照背景信息，你不会自己编出任何其他的信息。 
+            在完成目标的过程中你始终遵循以下内容，这是你的原则:
+                1. 写的内容必须是中文，回复格式必须是json。
+                2. 旅行计划分为四个部分：第一要起一个标题；第二要概况一下这段旅行；第三要对每条路线作出介绍；第四要把涉及到的景点分别做出详细介绍
+                . 你的写作内容必须严格按照同事给你的资料，只有他们说的才是符合用户要求的，你平常的经验不一定符合。
+            """,
+            verbose=True,
+            allow_delegation=False,
+            llm=llm,
+            max_iter=5,
+            # tools=[search_tool, ContentTools.read_content],
+        )
+    
     # 微观路线规划
     def routePlanner(self, llm, tools=[]):
         return Agent(

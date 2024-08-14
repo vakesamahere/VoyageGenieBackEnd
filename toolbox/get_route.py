@@ -31,10 +31,6 @@ class GetRoute(BaseTool):
         "一个工具，作用：在游玩的目的地输入若干个地点，输出路线。记住，只关乎目的地内部的具体游玩路线，和出发地到目的地的通行没有关系"
     )
     args_schema: Type[BaseModel] = GetRouteSchema
-    # callbacks=callback_fun
-
-    # def __init__(self,r):
-    #     self.receiver = r
 
     def _run(
         self,
@@ -42,19 +38,9 @@ class GetRoute(BaseTool):
         # city: str
     ) -> Dict[str,List]:
         """Use the tool."""
-        # resultStrings=[]
-        # callback_fun()
-        #events=events.split(',')
-
-        # for i in range(len(events)-1):
-        #     resultStrings.append(f"从{events[i]}坐22路公交车到{events[i+1]}")
-        # return ",再".join(resultStrings)+'.'
-
-        # input_list=[{"address":item.get('address',""),"city":city} for item in events if item.get('address',"")!=""]
-        # route = event_route(input_list)
-        # route = event_route_start_with_loc(input_list)
         route = event_route_start_with_loc(events)
-        # callback_fun(self.receiver,route)
+        with open('./output/get_route_result','w',encoding='utf-8') as f:
+            f.write(str(route))
         return route
 
         # test

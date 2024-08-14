@@ -11,19 +11,19 @@ COPY . /app
 # RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 
 # 安装指定的Python库
-RUN pip install langchain 
-RUN pip install langchain_core 
-RUN pip install langchain_openai 
-RUN pip install langchain_anthropic 
-RUN pip install langchain_community 
-RUN pip install flask 
-RUN pip install flask_cors 
-RUN pip install python-dotenv 
-RUN pip install pydantic 
-RUN pip install requests 
-RUN pip install beautifulsoup4
-RUN pip install unstructured
-RUN pip install crewai 
+RUN pip install langchain \
+langchain_core \
+langchain_openai \
+langchain_anthropic \
+langchain_community \
+flask \
+flask_cors \
+python-dotenv \
+pydantic \
+requests \
+beautifulsoup4 \
+unstructured \
+crewai 
 
 # 开放6000端口
 EXPOSE 6000

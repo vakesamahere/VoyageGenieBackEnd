@@ -74,6 +74,19 @@ class RedditTasks():
                 """),
         )
     
+    #json报告
+    def json_post(self,agent,context=[]):
+        return Task(
+            description=dedent(f"""为用户撰写一篇旅行攻略的帖子，用json格式。
+                """),
+            agent=agent,
+            context=context,
+            output_json="JSON",
+            expected_output = dedent(f"""  
+            你的最终答案必须用中文回复。
+                """),
+        )
+    
     #总任务
     def all(self,agent,context=[]):
         return Task(
